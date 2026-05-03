@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useStore } from "@/lib/store";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Sign in — Taxora" }] }),
@@ -19,9 +21,20 @@ function AuthPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", email: "", password: "", country: "India" });
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
-    login({ name: form.name || form.email.split("@")[0], email: form.email, country: form.country });
+    const name = form.name || form.email.split("@")[0];
+    if (mode === "signup") {
+      const { error } = await supabase.from("users").insert({ name, email: form.email });
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      toast.success("Account created! Welcome to Taxora.");
+    } else {
+      toast.success("Signed in.");
+    }
+    login({ name, email: form.email, country: form.country });
     navigate({ to: "/dashboard" });
   };
 
