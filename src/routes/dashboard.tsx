@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useStore, toUSD, type Transaction } from "@/lib/store";
+import { supabase } from "@/integrations/supabase/client";
 import {
-  LayoutDashboard, Receipt, FileText, LogOut, Sparkles, Plus, TrendingUp, Wallet, Calculator, Download,
+  LayoutDashboard, Receipt, FileText, LogOut, Sparkles, Plus, TrendingUp, Wallet, Calculator, Download, Users,
 } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
