@@ -1,6 +1,7 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { ThemeProvider } from "@/lib/theme";
 import { StoreProvider } from "@/lib/store";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 
@@ -62,6 +63,7 @@ function RootComponent() {
     <ThemeProvider>
       <StoreProvider>
         <Outlet />
+        <Toaster />
       </StoreProvider>
     </ThemeProvider>
   );
