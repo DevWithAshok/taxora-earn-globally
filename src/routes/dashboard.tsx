@@ -166,6 +166,57 @@ function Overview({ totalUSD, estimatedTax, byCategory, transactions }: { totalU
           </ul>
         </div>
       </div>
+
+      <SignupsCard />
+    </div>
+  );
+}
+
+function SignupsCard() {
+  const [users, setUsers] = useState<{ id: string; name: string; email: string; created_at: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { data, error } = await supabase
+        .from("users")
+        .select("id, name, email, created_at")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!active) return;
+      if (!error && data) setUsers(data);
+      setLoading(false);
+    })();
+    return () => { active = false; };
+  }, []);
+
+  return (
+    <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-card">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Users className="h-4 w-4 text-primary" />
+          <h3 className="font-display text-lg font-semibold">Registered users</h3>
+        </div>
+        <span className="text-xs text-muted-foreground">{users.length} total</span>
+      </div>
+      {loading ? (
+        <p className="mt-4 text-sm text-muted-foreground">Loading…</p>
+      ) : users.length === 0 ? (
+        <p className="mt-4 text-sm text-muted-foreground">No signups yet.</p>
+      ) : (
+        <ul className="mt-4 divide-y divide-border/50">
+          {users.map((u) => (
+            <li key={u.id} className="flex items-center justify-between py-2 text-sm">
+              <div>
+                <p className="font-medium">{u.name}</p>
+                <p className="text-xs text-muted-foreground">{u.email}</p>
+              </div>
+              <p className="text-xs text-muted-foreground">{new Date(u.created_at).toLocaleDateString()}</p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
